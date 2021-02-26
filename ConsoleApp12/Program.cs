@@ -6,7 +6,7 @@ namespace kurs_3
     {
         static void Main(string[] args)
         {
-            double creditSumm, procent, monthPayment, paymentCreditForMonth, yearSumPayment = 0;
+            double creditSumm, procent, monthPayment, paymentCreditForMonth, yearSumPayment = 0;//
             byte choose;
             Console.WriteLine("-------------------------------------");
             Console.WriteLine("Введите сумму кредита:");
