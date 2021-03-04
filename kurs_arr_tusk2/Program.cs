@@ -11,7 +11,7 @@ namespace kurs_arr_tusk2
             Console.WriteLine("Выберите вариант инициализации массива:\n1-Случайные числа (рандом от 0 до 100)\n2-Ввод вручную с клавиатуры");
 
             byte choose = Convert.ToByte(Console.ReadLine());
-            if(choose==1)
+            if (choose == 1)
             {
                 Random r = new Random();
                 for (int i = 0; i < arrMaxSearch.GetLength(0); i++)
@@ -22,7 +22,7 @@ namespace kurs_arr_tusk2
                     }
                 }
             }
-            if(choose==2)
+            if (choose == 2)
             {
                 for (int i = 0; i < arrMaxSearch.GetLength(0); i++)
                 {
@@ -39,17 +39,17 @@ namespace kurs_arr_tusk2
                 for (int j = 0; j < arrMaxSearch.GetLength(1); j++)
                 {
 
-                    Console.Write(arrMaxSearch[i, j]+"\t");
+                    Console.Write(arrMaxSearch[i, j] + "\t");
                 }
                 Console.WriteLine();
             }
             for (int i = 0; i < arrMaxSearch.GetLength(0); i++)
             {
-                maxElement = arrMaxSearch[i,0];
+                maxElement = arrMaxSearch[i, 0];
                 for (int j = 0; j < arrMaxSearch.GetLength(1); j++)
                 {
 
-                    if (maxElement<arrMaxSearch[i,j])
+                    if (maxElement < arrMaxSearch[i, j])
                     {
                         maxElement = arrMaxSearch[i, j];
                     }
