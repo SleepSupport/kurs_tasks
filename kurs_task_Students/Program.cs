@@ -30,7 +30,7 @@ namespace kurs_task_Students
 
         public void RandomMarks()
         {
-               Random r = new Random();
+            Random r = new Random();
             for (int i = 0; i < 10; i++)
             {
                 Marks.Add(r.Next(4, 11));
@@ -43,9 +43,9 @@ namespace kurs_task_Students
         {
             Console.WriteLine(Marks.Average());
         }
-        public  void ShowMarks()
+        public void ShowMarks()
         {
-           
+
             foreach (int i in Marks)
             {
                 Console.WriteLine(i);
@@ -59,7 +59,8 @@ namespace kurs_task_Students
 
         }
     }
-    class Group:Student  {
+    class Group : Student
+    {
         private int _groupNumber;
         private List<Student> _studentsList = new List<Student>();
 
@@ -79,8 +80,8 @@ namespace kurs_task_Students
                 Console.Write($"Средняя оценка {i.Name} {i.Surname}:");
                 i.AverageScore();
             }
-        } 
-      
+        }
+
         public void ShowGroupMarks()
         {
             foreach (Student i in StudentsList)
@@ -96,18 +97,19 @@ namespace kurs_task_Students
             i.StudentsList.RemoveAt(studentNumber);
 
         }
-       
+
 
     }
-    
+
     class Program
     {
-      
+
         static void Main(string[] args)
         {
-            Student test = new Student("Вася","Петров");
-            List <Student> testList= new List<Student>() { new Student("Глеб", "Криткович"),
-                new Student("Вова", "Жуковский"), 
+            Student test = new Student("Вася", "Петров");
+            List<Student> testList = new List<Student>() {
+                new Student("Глеб", "Криткович"),
+                new Student("Вова", "Жуковский"),
                 new Student("Коля", "Лисовский"),
                 new Student("Никита", "Кухарев") };
             Console.WriteLine("Проверка класса Студента");
@@ -117,12 +119,12 @@ namespace kurs_task_Students
             Group testGroup2 = new Group(481, testList);
 
             Console.WriteLine("Проверка класса группы");
-           
+
             testGroup.ShowGroupMarks();
             testGroup.ShowGroupScoreAverage();
             testGroup.ChangeGroup(1, testGroup, testGroup2);
-           
-            
+
+
 
         }
     }
