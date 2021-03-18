@@ -4,7 +4,7 @@ namespace kurs_3
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             double creditSumm, procent, monthPayment, paymentCreditForMonth, yearSumPayment = 0;
             byte choose;

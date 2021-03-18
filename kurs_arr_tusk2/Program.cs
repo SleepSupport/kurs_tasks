@@ -4,7 +4,7 @@ namespace kurs_arr_tusk2
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             int[,] arrMaxSearch = new int[3, 3];
             int maxElement;

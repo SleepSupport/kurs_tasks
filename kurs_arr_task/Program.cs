@@ -4,7 +4,7 @@ namespace kurs_arr_task
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             int[] arrSortTest = new int[6];
             Console.WriteLine("Введите значение массива int на 6 значений");

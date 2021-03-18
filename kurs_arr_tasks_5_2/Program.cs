@@ -4,7 +4,7 @@ namespace kurs_arr_tasks_5_2
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             int[,] arr = new int[10,10];
             int max,index;

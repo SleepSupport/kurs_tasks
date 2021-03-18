@@ -4,7 +4,7 @@ namespace kurs_string_tasks_5_1
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             Console.WriteLine("Введите строку в которой хотите посчитать количество гласных");
             string check = Console.ReadLine();
