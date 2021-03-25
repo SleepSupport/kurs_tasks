@@ -39,7 +39,7 @@ namespace kurs_task_Students
         public string Name { get => _name; set => _name = value; }
         public string Surname { get => _surname; set => _surname = value; }
         public List<int> Marks { get => _marks; set => _marks = value; }
-        public  void AverageScore()
+        public void AverageScore()
         {
             Console.WriteLine(Marks.Average());
         }
@@ -60,7 +60,7 @@ namespace kurs_task_Students
 
         }*/
     }
-    class Group 
+    class Group
     {
         private int _groupNumber;
         private List<Student> _studentsList = new List<Student>();
@@ -91,9 +91,9 @@ namespace kurs_task_Students
                 Console.WriteLine($"Студент {i}: ");
                 newName = Console.ReadLine();
                 newSurame = Console.ReadLine();
-                StudentsList.Add(new Student(newName,newSurame));
+                StudentsList.Add(new Student(newName, newSurame));
             }
-        } 
+        }
         public int GroupNumber { get => _groupNumber; set => _groupNumber = value; }
         internal List<Student> StudentsList { get => _studentsList; set => _studentsList = value; }
 
@@ -119,12 +119,12 @@ namespace kurs_task_Students
             foreach (Student i in StudentsList)
             {
                 Console.WriteLine($"Студент {i.Name} {i.Surname} cредння оценка студента: {i.Marks.Average()}");
-               
+
             }
         }
         public void ChangeGroup(int studentNumber, Group i, Group a)
         {
-           
+
             a.StudentsList.Add(a.StudentsList[studentNumber]);
             i.StudentsList.RemoveAt(studentNumber);
 
@@ -138,33 +138,24 @@ namespace kurs_task_Students
 
         static void Main(string[] args)
         {
-          
-            Student test = new Student("Вася", "Кузнецов");
+                        Student test = new Student("Вася", "Кузнецов");
             List<Student> testList = new List<Student>() {
                 new Student("Глеб", "Криткович"),
                 new Student("Вова", "Жуковский"),
                 new Student("Коля", "Лисовский"),
                 new Student("Никита", "Кухарев") };
             List<Group> groups = new List<Group>();
-          
-            Console.WriteLine("Проверка класса Студента");
-            test.AverageScore();
-            test.ShowMarks();
             Group testGroup = new Group(481, testList);
             Group testGroup2 = new Group(485, testList);
             groups.Add(testGroup);
-            groups.Add(testGroup2); 
-            Console.WriteLine("Проверка класса группы");         
-            testGroup.ShowGroupMarks();
-            testGroup.ShowGroupScoreAverage();
-            testGroup.ChangeGroup(1, testGroup, testGroup2);
-            string name,surname;
-            bool end = true,studentEnd=true,groupEnd=true;
-            int choose, gropChoose,studentChoose,groupNumber,studentsNum;
+            groups.Add(testGroup2);
+            string name, surname;
+            bool end = true, studentEnd = true, groupEnd = true;
+            int choose, gropChoose, studentChoose, groupNumber, studentsNum;
             for (; end;)
             {
                 Console.WriteLine("-----------------==============Выберите пункт меню:==============----------------- \n1-Студенты\n2-Группы\n3-Завершить программу");
-                choose=Convert.ToInt32(Console.ReadLine());
+                choose = Convert.ToInt32(Console.ReadLine());
                 switch (choose)
                 {
                     case 1:
@@ -172,7 +163,7 @@ namespace kurs_task_Students
                             studentEnd = true;
                             for (; studentEnd;)
                             {
-                                
+
                                 Console.WriteLine("\n======================Выберите пункт меню студентов:====================== \n1-Создать студента\n2-Поставить оценку студенту\n3-Удалить студента\n4-Редактировать студента\n5-Вернуться обратно");
                                 choose = Convert.ToInt32(Console.ReadLine());
                                 switch (choose)
@@ -206,7 +197,7 @@ namespace kurs_task_Students
                                             }
                                             studentChoose = Convert.ToInt32(Console.ReadLine());
                                             Console.WriteLine($"Введите какую оценку хотите поставить студенту {groups[gropChoose].StudentsList[studentChoose].Name} {groups[gropChoose].StudentsList[studentChoose].Surname}");
-                                            
+
                                             groups[gropChoose].StudentsList[studentChoose].Marks.Add(Convert.ToInt32(Console.ReadLine()));
                                             break;
                                         }
@@ -260,7 +251,7 @@ namespace kurs_task_Students
                                                         Console.WriteLine("Выберите оценку которую хотите редактировать");
                                                         for (int i = 0; i < groups[gropChoose].StudentsList[studentChoose].Marks.Count; i++)
                                                         {
-                                                            Console.WriteLine( $"Оценка:{groups[gropChoose].StudentsList[studentChoose].Marks[i]} Номер оценки для редактирования: {i}");
+                                                            Console.WriteLine($"Оценка:{groups[gropChoose].StudentsList[studentChoose].Marks[i]} Номер оценки для редактирования: {i}");
                                                         }
                                                         choose = Convert.ToInt32(Console.ReadLine());
                                                         groups[gropChoose].StudentsList[studentChoose].Marks[choose] = Convert.ToInt32(Console.ReadLine());
@@ -304,8 +295,8 @@ namespace kurs_task_Students
                                                 case 1:
                                                     {
                                                         Console.WriteLine("Введите номер группы");
-                                                        groupNumber =Convert.ToInt32(Console.ReadLine());
-                                                                                                          
+                                                        groupNumber = Convert.ToInt32(Console.ReadLine());
+
                                                         groups.Add(new Group(groupNumber));
                                                         break;
                                                     }
@@ -341,7 +332,7 @@ namespace kurs_task_Students
                                                         gropChoose = Convert.ToInt32(Console.ReadLine());
                                                         Console.WriteLine("Введите новый номер группы:");
                                                         groups[gropChoose].GroupNumber = Convert.ToInt32(Console.ReadLine());
-                                                        
+
 
                                                         break;
                                                     }
@@ -354,7 +345,7 @@ namespace kurs_task_Students
                                                         }
                                                         gropChoose = Convert.ToInt32(Console.ReadLine());
                                                         Console.WriteLine("Введите новый номер группы:");
-                                                       
+
                                                         Console.WriteLine("Выберите Студента в группе:");
                                                         for (int i = 0; i < groups[gropChoose].StudentsList.Count; i++)
                                                         {
@@ -364,11 +355,11 @@ namespace kurs_task_Students
                                                         groups[gropChoose].StudentsList.RemoveAt(studentChoose);
                                                         break;
                                                     }
-                                             
-                                                        default:
+
+                                                default:
                                                     break;
                                             }
-                                            break;  
+                                            break;
                                         }
                                     case 3:
                                         {
