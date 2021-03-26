@@ -51,15 +51,9 @@ namespace kurs_task_Students
                 Console.WriteLine(i);
             }
         }
-        public virtual void ChangeGroup(int studentNumber, Group i, Group a)
-        {
-            Console.WriteLine("метод перевода студента у студента");
-            a.StudentsList.Add(a.StudentsList[studentNumber]);
-            i.StudentsList.RemoveAt(studentNumber);
-
-        }
+      
     }
-    class Group : Student
+    class Group 
     {
         private int _groupNumber;
         private List<Student> _studentsList = new List<Student>();
@@ -90,9 +84,9 @@ namespace kurs_task_Students
                 i.ShowMarks();
             }
         }
-        public override void ChangeGroup(int studentNumber, Group i, Group a)
+        public void ChangeGroup(int studentNumber, Group i, Group a)
         {
-            Console.WriteLine("метод перевода студента у студента");
+            
             a.StudentsList.Add(a.StudentsList[studentNumber]);
             i.StudentsList.RemoveAt(studentNumber);
 
