@@ -282,7 +282,7 @@ namespace kurs_task_Students
                             groupEnd = true;
                             for (; groupEnd;)
                             {
-                                Console.WriteLine("\n======================Выберите пункт меню Групп:====================== \n1-Создать Группу\n2-Редактировать группу\n3-Удалить группу\n4-Посмотреть список всех групп\n5-Вернуться обратно");
+                                Console.WriteLine("\n======================Выберите пункт меню Групп:====================== \n1-Создать Группу\n2-Редактировать группу\n3-Удалить группу\n4-Посмотреть список всех групп\n5-Вывод Информации о группе\n6-Вернуться обратно");
                                 choose = Convert.ToInt32(Console.ReadLine());
                                 switch (choose)
                                 {
@@ -383,6 +383,18 @@ namespace kurs_task_Students
                                             break;
                                         }
                                     case 5:
+                                        {
+                                            Console.WriteLine("---------------------============Выберите группу:============---------------------");
+                                            for (int i = 0; i < groups.Count; i++)
+                                            {
+                                                Console.WriteLine($"{i}-{groups[i].GroupNumber}");
+                                            }
+                                            gropChoose = Convert.ToInt32(Console.ReadLine());
+                                            Console.WriteLine($"Группа - {groups[gropChoose].GroupNumber}");
+                                            groups[gropChoose].ShowStudentsInGroup();
+                                            break;
+                                        }
+                                    case 6:
                                         {
                                             groupEnd = false;
                                             break;
