@@ -3,8 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 namespace kurs_task_Students
 {
-    class Student
+    interface IMarkAdd
     {
+        public void MarkAdd(int mark) { }
+    }
+    interface IShow
+    {
+        public void Show() { }
+    }
+
+    class Student : IMarkAdd, IShow
+    {
+        public delegate void StudentUpdater(string messege);
+        public event StudentUpdater Notify;
         private string _name;
         private string _surname;
         private List<int> _marks = new List<int>();
@@ -52,16 +63,20 @@ namespace kurs_task_Students
             }
             Console.WriteLine();
         }
-        /*public virtual void ChangeGroup(int studentNumber, Group i, Group a)
+        public void MarkAdd(int mark)
         {
-            Console.WriteLine("метод перевода студента у студента");
-            a.StudentsList.Add(a.StudentsList[studentNumber]);
-            i.StudentsList.RemoveAt(studentNumber);
-
-        }*/
+            Marks.Add(mark);
+            Notify?.Invoke($"Студенту {Name} {Surname} поставлена оценка {mark}");
+        }
+        public void Show()
+        {
+            Console.WriteLine($"Имя стеднта: {Name} Фамилия студента {Surname}:");
+        }
     }
-    class Group
+    class Group : IMarkAdd, IShow
     {
+        public delegate void GroupUpdater(string messege);
+        public event GroupUpdater Notify;
         private int _groupNumber;
         private List<Student> _studentsList = new List<Student>();
 
@@ -94,10 +109,18 @@ namespace kurs_task_Students
                 StudentsList.Add(new Student(newName, newSurame));
             }
         }
-        public int GroupNumber { get => _groupNumber; set => _groupNumber = value; }
+        public int GroupNumber
+        {
+            get => _groupNumber;
+            set {
+                Notify?.Invoke($"Изменено название группы с {_groupNumber} на {value}");
+              _groupNumber = value;
+              
+            }
+        }
         internal List<Student> StudentsList { get => _studentsList; set => _studentsList = value; }
 
-        public void ShowGroupScoreAverage()
+        public void ShowAverage()
         {
             foreach (Student i in StudentsList)
             {
@@ -105,8 +128,12 @@ namespace kurs_task_Students
                 i.AverageScore();
             }
         }
-
-        public void ShowGroupMarks()
+        public void MarkAdd(int mark, int studentNumber)
+        {
+            StudentsList[studentNumber].MarkAdd(mark);
+            Notify?.Invoke($"Студенту {StudentsList[studentNumber].Name} {StudentsList[studentNumber].Surname} поставлена оценка {mark}");
+        }
+        public void ShowMarks()
         {
             foreach (Student i in StudentsList)
             {
@@ -114,7 +141,7 @@ namespace kurs_task_Students
                 i.ShowMarks();
             }
         }
-        public void ShowStudentsInGroup()
+        public void Show()
         {
             foreach (Student i in StudentsList)
             {
@@ -122,13 +149,22 @@ namespace kurs_task_Students
 
             }
         }
+        public void DeleteStudent(int studentNum)
+        {
+            StudentsList.RemoveAt(studentNum);
+            Notify?.Invoke($"Удален студент под номером {studentNum}");
+        }
         public void ChangeGroup(int studentNumber, Group i, Group a)
         {
 
             a.StudentsList.Add(a.StudentsList[studentNumber]);
             i.StudentsList.RemoveAt(studentNumber);
+            Notify?.Invoke($"Студент {StudentsList[studentNumber].Name} {StudentsList[studentNumber].Surname} сменил группу с группы {i.GroupNumber} на группу {a.GroupNumber}");
+
 
         }
+
+
 
 
     }
@@ -138,7 +174,7 @@ namespace kurs_task_Students
 
         static void Main(string[] args)
         {
-                        Student test = new Student("Вася", "Кузнецов");
+            Student test = new Student("Вася", "Кузнецов");
             List<Student> testList = new List<Student>() {
                 new Student("Глеб", "Криткович"),
                 new Student("Вова", "Жуковский"),
@@ -151,7 +187,7 @@ namespace kurs_task_Students
             groups.Add(testGroup2);
             string name, surname;
             bool end = true, studentEnd = true, groupEnd = true;
-            int choose, gropChoose, studentChoose, groupNumber, studentsNum;
+            int choose, groupch, studentch, groupNumber, studentsNum, notifycheck;
             for (; end;)
             {
                 Console.WriteLine("-----------------==============Выберите пункт меню:==============----------------- \n1-Студенты\n2-Группы\n3-Завершить программу");
@@ -164,7 +200,7 @@ namespace kurs_task_Students
                             for (; studentEnd;)
                             {
 
-                                Console.WriteLine("\n======================Выберите пункт меню студентов:====================== \n1-Создать студента\n2-Поставить оценку студенту\n3-Удалить студента\n4-Редактировать студента\n5-Вернуться обратно");
+                                Console.WriteLine("\n======================Выберите пункт меню студентов:====================== \n1-Создать студента\n2-Поставить оценку студенту\n3-Удалить студента\n4-Подписаться/Отписаться на события\n5-Редактировать студента\n6-Вернуться обратно");
                                 choose = Convert.ToInt32(Console.ReadLine());
                                 switch (choose)
                                 {
@@ -175,11 +211,11 @@ namespace kurs_task_Students
                                             {
                                                 Console.WriteLine($"{i}-{groups[i].GroupNumber}");
                                             }
-                                            gropChoose = Convert.ToInt32(Console.ReadLine());
+                                            groupch = Convert.ToInt32(Console.ReadLine());
                                             Console.WriteLine("Введите имя и фамилию студента");
                                             name = Console.ReadLine();
                                             surname = Console.ReadLine();
-                                            groups[gropChoose].StudentsList.Add(new Student(name, surname));
+                                            groups[groupch].StudentsList.Add(new Student(name, surname));
                                             break;
                                         }
                                     case 2:
@@ -189,16 +225,16 @@ namespace kurs_task_Students
                                             {
                                                 Console.WriteLine($"{i}-{groups[i].GroupNumber}");
                                             }
-                                            gropChoose = Convert.ToInt32(Console.ReadLine());
+                                            groupch = Convert.ToInt32(Console.ReadLine());
                                             Console.WriteLine("Выберите Студента в группе:");
-                                            for (int i = 0; i < groups[gropChoose].StudentsList.Count; i++)
+                                            for (int i = 0; i < groups[groupch].StudentsList.Count; i++)
                                             {
-                                                Console.WriteLine($"{i}-{groups[gropChoose].StudentsList[i].Name} {groups[gropChoose].StudentsList[i].Surname}");
+                                                Console.WriteLine($"{i}-{groups[groupch].StudentsList[i].Name} {groups[groupch].StudentsList[i].Surname}");
                                             }
-                                            studentChoose = Convert.ToInt32(Console.ReadLine());
-                                            Console.WriteLine($"Введите какую оценку хотите поставить студенту {groups[gropChoose].StudentsList[studentChoose].Name} {groups[gropChoose].StudentsList[studentChoose].Surname}");
+                                            studentch = Convert.ToInt32(Console.ReadLine());
+                                            Console.WriteLine($"Введите какую оценку хотите поставить студенту {groups[groupch].StudentsList[studentch].Name} {groups[groupch].StudentsList[studentch].Surname}");
 
-                                            groups[gropChoose].StudentsList[studentChoose].Marks.Add(Convert.ToInt32(Console.ReadLine()));
+                                            groups[groupch].StudentsList[studentch].MarkAdd(Convert.ToInt32(Console.ReadLine()));
                                             break;
                                         }
                                     case 3:
@@ -208,14 +244,14 @@ namespace kurs_task_Students
                                             {
                                                 Console.WriteLine($"{i}-{groups[i].GroupNumber}");
                                             }
-                                            gropChoose = Convert.ToInt32(Console.ReadLine());
+                                            groupch = Convert.ToInt32(Console.ReadLine());
                                             Console.WriteLine("Выберите Студента в группе:");
-                                            for (int i = 0; i < groups[gropChoose].StudentsList.Count; i++)
+                                            for (int i = 0; i < groups[groupch].StudentsList.Count; i++)
                                             {
-                                                Console.WriteLine($"{i}-{groups[gropChoose].StudentsList[i].Name} {groups[gropChoose].StudentsList[i].Surname}");
+                                                Console.WriteLine($"{i}-{groups[groupch].StudentsList[i].Name} {groups[groupch].StudentsList[i].Surname}");
                                             }
-                                            studentChoose = Convert.ToInt32(Console.ReadLine());
-                                            groups[gropChoose].StudentsList.RemoveAt(studentChoose);
+                                            studentch = Convert.ToInt32(Console.ReadLine());
+                                            groups[groupch].StudentsList.RemoveAt(studentch);
                                             break;
                                         }
                                     case 4:
@@ -225,36 +261,70 @@ namespace kurs_task_Students
                                             {
                                                 Console.WriteLine($"{i}-{groups[i].GroupNumber}");
                                             }
-                                            gropChoose = Convert.ToInt32(Console.ReadLine());
+                                            groupch = Convert.ToInt32(Console.ReadLine());
                                             Console.WriteLine("Выберите Студента в группе:");
-                                            for (int i = 0; i < groups[gropChoose].StudentsList.Count; i++)
+                                            for (int i = 0; i < groups[groupch].StudentsList.Count; i++)
                                             {
-                                                Console.WriteLine($"{i}-{groups[gropChoose].StudentsList[i].Name} {groups[gropChoose].StudentsList[i].Surname}");
+                                                Console.WriteLine($"{i}-{groups[groupch].StudentsList[i].Name} {groups[groupch].StudentsList[i].Surname}");
                                             }
-                                            studentChoose = Convert.ToInt32(Console.ReadLine());
+                                            studentch = Convert.ToInt32(Console.ReadLine());
+                                            Console.WriteLine("1-Подписаться на события \n2-отписаться от событий");
+                                            notifycheck = Convert.ToInt32(Console.ReadLine());
+                                            switch (notifycheck)
+                                            {
+                                                case 1:
+                                                    {
+                                                        groups[groupch].StudentsList[studentch].Notify += DisplayMessage;
+                                                        break;
+                                                    }
+                                                case 2:
+                                                    {
+                                                        groups[groupch].StudentsList[studentch].Notify -= DisplayMessage;
+
+                                                        break;
+                                                    }
+                                                default:
+                                                    break;
+                                            }
+                                            break;
+                                        }
+                                    case 5:
+                                        {
+                                            Console.WriteLine("---------------------============Выберите группу:============---------------------");
+                                            for (int i = 0; i < groups.Count; i++)
+                                            {
+                                                Console.WriteLine($"{i}-{groups[i].GroupNumber}");
+                                            }
+                                            groupch = Convert.ToInt32(Console.ReadLine());
+                                            Console.WriteLine("Выберите Студента в группе:");
+                                            for (int i = 0; i < groups[groupch].StudentsList.Count; i++)
+                                            {
+                                                Console.WriteLine($"{i}-{groups[groupch].StudentsList[i].Name} {groups[groupch].StudentsList[i].Surname}");
+                                            }
+                                            studentch = Convert.ToInt32(Console.ReadLine());
                                             Console.WriteLine("Выберите:\n1-Изменить имя\n2-Изменить Фамилию\n3-Изменить оценку");
                                             choose = Convert.ToInt32(Console.ReadLine());
                                             switch (choose)
                                             {
                                                 case 1:
                                                     {
-                                                        groups[gropChoose].StudentsList[studentChoose].Name = Console.ReadLine();
+                                                        groups[groupch].StudentsList[studentch].Name = Console.ReadLine();
                                                         break;
                                                     }
                                                 case 2:
                                                     {
-                                                        groups[gropChoose].StudentsList[studentChoose].Surname = Console.ReadLine();
+                                                        groups[groupch].StudentsList[studentch].Surname = Console.ReadLine();
                                                         break;
                                                     }
                                                 case 3:
                                                     {
                                                         Console.WriteLine("Выберите оценку которую хотите редактировать");
-                                                        for (int i = 0; i < groups[gropChoose].StudentsList[studentChoose].Marks.Count; i++)
+                                                        for (int i = 0; i < groups[groupch].StudentsList[studentch].Marks.Count; i++)
                                                         {
-                                                            Console.WriteLine($"Оценка:{groups[gropChoose].StudentsList[studentChoose].Marks[i]} Номер оценки для редактирования: {i}");
+                                                            Console.WriteLine($"Оценка:{groups[groupch].StudentsList[studentch].Marks[i]} Номер оценки для редактирования: {i}");
                                                         }
                                                         choose = Convert.ToInt32(Console.ReadLine());
-                                                        groups[gropChoose].StudentsList[studentChoose].Marks[choose] = Convert.ToInt32(Console.ReadLine());
+                                                        groups[groupch].StudentsList[studentch].Marks[choose] = Convert.ToInt32(Console.ReadLine());
                                                         break;
                                                     }
                                                 default:
@@ -264,7 +334,7 @@ namespace kurs_task_Students
                                             }
                                             break;
                                         }
-                                    case 5:
+                                    case 6:
                                         {
                                             studentEnd = false;
                                             break;
@@ -282,7 +352,7 @@ namespace kurs_task_Students
                             groupEnd = true;
                             for (; groupEnd;)
                             {
-                                Console.WriteLine("\n======================Выберите пункт меню Групп:====================== \n1-Создать Группу\n2-Редактировать группу\n3-Удалить группу\n4-Посмотреть список всех групп\n5-Вывод Информации о группе\n6-Вернуться обратно");
+                                Console.WriteLine("\n======================Выберите пункт меню Групп:====================== \n1-Создать Группу\n2-Редактировать группу\n3-Удалить группу\n4-Посмотреть список всех групп\n5-Вывод Информации о группе\n6-Подписаться на события в группе\n7-Вернуться обратно");
                                 choose = Convert.ToInt32(Console.ReadLine());
                                 switch (choose)
                                 {
@@ -329,9 +399,9 @@ namespace kurs_task_Students
                                                         {
                                                             Console.WriteLine($"{i}-{groups[i].GroupNumber}");
                                                         }
-                                                        gropChoose = Convert.ToInt32(Console.ReadLine());
+                                                        groupch = Convert.ToInt32(Console.ReadLine());
                                                         Console.WriteLine("Введите новый номер группы:");
-                                                        groups[gropChoose].GroupNumber = Convert.ToInt32(Console.ReadLine());
+                                                        groups[groupch].GroupNumber = Convert.ToInt32(Console.ReadLine());
 
 
                                                         break;
@@ -343,16 +413,16 @@ namespace kurs_task_Students
                                                         {
                                                             Console.WriteLine($"{i}-{groups[i].GroupNumber}");
                                                         }
-                                                        gropChoose = Convert.ToInt32(Console.ReadLine());
+                                                        groupch = Convert.ToInt32(Console.ReadLine());
                                                         Console.WriteLine("Введите новый номер группы:");
 
                                                         Console.WriteLine("Выберите Студента в группе:");
-                                                        for (int i = 0; i < groups[gropChoose].StudentsList.Count; i++)
+                                                        for (int i = 0; i < groups[groupch].StudentsList.Count; i++)
                                                         {
-                                                            Console.WriteLine($"{i}-{groups[gropChoose].StudentsList[i].Name} {groups[gropChoose].StudentsList[i].Surname}");
+                                                            Console.WriteLine($"{i}-{groups[groupch].StudentsList[i].Name} {groups[groupch].StudentsList[i].Surname}");
                                                         }
-                                                        studentChoose = Convert.ToInt32(Console.ReadLine());
-                                                        groups[gropChoose].StudentsList.RemoveAt(studentChoose);
+                                                        studentch = Convert.ToInt32(Console.ReadLine());
+                                                        groups[groupch].DeleteStudent(studentch);
                                                         break;
                                                     }
 
@@ -368,9 +438,9 @@ namespace kurs_task_Students
                                             {
                                                 Console.WriteLine($"{i}-{groups[i].GroupNumber}");
                                             }
-                                            gropChoose = Convert.ToInt32(Console.ReadLine());
+                                            groupch = Convert.ToInt32(Console.ReadLine());
                                             Console.WriteLine("Введите новый номер группы:");
-                                            groups.RemoveAt(gropChoose);
+                                            groups.RemoveAt(groupch);
                                             break;
                                         }
                                     case 4:
@@ -378,7 +448,7 @@ namespace kurs_task_Students
                                             foreach (Group item in groups)
                                             {
                                                 Console.WriteLine($"Группа - {item.GroupNumber}");
-                                                item.ShowStudentsInGroup();
+                                                item.Show();
                                             }
                                             break;
                                         }
@@ -389,12 +459,39 @@ namespace kurs_task_Students
                                             {
                                                 Console.WriteLine($"{i}-{groups[i].GroupNumber}");
                                             }
-                                            gropChoose = Convert.ToInt32(Console.ReadLine());
-                                            Console.WriteLine($"Группа - {groups[gropChoose].GroupNumber}");
-                                            groups[gropChoose].ShowStudentsInGroup();
+                                            groupch = Convert.ToInt32(Console.ReadLine());
+                                            Console.WriteLine($"Группа - {groups[groupch].GroupNumber}");
+                                            groups[groupch].Show();
                                             break;
                                         }
                                     case 6:
+                                        {
+                                            Console.WriteLine("---------------------============Выберите группу:============---------------------");
+                                            for (int i = 0; i < groups.Count; i++)
+                                            {
+                                                Console.WriteLine($"{i}-{groups[i].GroupNumber}");
+                                            }
+                                            groupch = Convert.ToInt32(Console.ReadLine());
+                                            Console.WriteLine("1-Подписаться на события \n2-отписаться от событий");
+                                            notifycheck = Convert.ToInt32(Console.ReadLine());
+                                            switch (notifycheck)
+                                            {
+                                                case 1:
+                                                    {
+                                                        groups[groupch].Notify += DisplayMessage;
+                                                        break;
+                                                    }
+                                                case 2:
+                                                    {
+                                                        groups[groupch].Notify -= DisplayMessage;
+
+                                                        break;
+                                                    }
+                                            }
+                                            break;
+
+                                        }
+                                    case 7:
                                         {
                                             groupEnd = false;
                                             break;
@@ -418,7 +515,13 @@ namespace kurs_task_Students
                             break;
                         }
                 }
+                static void DisplayMessage(string message)
+                {
+                    Console.WriteLine(message);
+                }
+
             }
+
 
 
         }
